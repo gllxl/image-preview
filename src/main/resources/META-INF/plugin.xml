@@ -1,18 +1,22 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
     <id>com.github.gllxl.imagepreview</id>
-    <name>IntelliJ Platform Plugin image-preview</name>
+    <name>image-preview</name>
     <vendor>gllxl</vendor>
 
     <depends>com.intellij.modules.platform</depends>
+    <depends>JavaScript</depends>
+    <depends>NodeJS</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="com.github.gllxl.imagepreview.services.MyApplicationService"/>
-        <projectService serviceImplementation="com.github.gllxl.imagepreview.services.MyProjectService"/>
+        <runLineMarkerContributor language="JavaScript" implementationClass="com.github.gllxl.imagepreview.LineMarkerContributor"/>
     </extensions>
 
     <applicationListeners>
-        <listener class="com.github.gllxl.imagepreview.listeners.MyProjectManagerListener"
-                  topic="com.intellij.openapi.project.ProjectManagerListener"/>
+
     </applicationListeners>
+
+    <description>
+        a preview image plugin, when you define an image url, you can preview it content and size in IDE
+    </description>
 </idea-plugin>
