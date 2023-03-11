@@ -17,6 +17,8 @@
     </applicationListeners>
 
     <description>
-        a preview image plugin, when you define an image url, you can preview it content and size in IDE
+        <![CDATA[
+            A preview image plugin, when you define an image url, you can preview it content and size in IDE
+        ]]>
     </description>
 </idea-plugin>
