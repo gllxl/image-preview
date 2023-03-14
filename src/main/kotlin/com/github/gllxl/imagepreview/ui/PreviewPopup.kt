@@ -2,6 +2,7 @@ package com.github.gllxl.imagepreview.ui
 
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.ui.awt.RelativePoint
+import java.awt.BorderLayout
 import java.awt.GraphicsEnvironment
 import java.awt.Point
 import java.awt.Window
@@ -20,7 +21,7 @@ class PreviewPopup {
       val width = image.iconWidth;
       val height = image.iconHeight;
       val title = "$width * $height"
-      panel.add(JLabel(image))
+      panel.add(JLabel(image), BorderLayout.CENTER)
       val r = if (window != null) window.bounds else GraphicsEnvironment.getLocalGraphicsEnvironment().defaultScreenDevice.defaultConfiguration.bounds
       val point = Point((r.width - image.iconWidth) / 2, (r.height - image.iconHeight) / 2)
       val location = if (window != null) RelativePoint(window, point) else RelativePoint(point)
@@ -29,7 +30,7 @@ class PreviewPopup {
         .setRequestFocus(true)
         .setFocusable(true)
         .setResizable(false)
-        .setMovable(false)
+        .setMovable(true)
         .setModalContext(false)
         .setShowShadow(true)
         .setShowBorder(false)
