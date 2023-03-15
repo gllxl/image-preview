@@ -5,7 +5,7 @@ import com.intellij.lang.javascript.psi.JSVariable
 import com.intellij.psi.PsiElement
 
 fun getJsVariableContent (element: PsiElement): String {
-  return element.node.lastChildNode.text.replace("\'", "").replace("\"", "")
+  return element.node.lastChildNode.text
 }
 
 class JsLineMarkerContributor : RunLineMarkerContributor() {
@@ -17,9 +17,9 @@ class JsLineMarkerContributor : RunLineMarkerContributor() {
         return null
       }
 
-      val value = getJsVariableContent(element)
+      val imgUrl = getJsVariableContent(element)
 
-      return getLineMaker(value)
+      return getLineMaker(removeUrlQuotes(imgUrl))
     }
     return null
   }

@@ -6,5 +6,5 @@ fun isImageUrl(url: String): Boolean {
 }
 
 fun removeUrlQuotes(url: String): String {
-  return url.replace("\"", "").replace("\"", "")
+  return url.replace("\"", "").replace("\'", "")
 }
