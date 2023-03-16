@@ -19,7 +19,7 @@
 
     <description>
         <![CDATA[
-            A preview image plugin, when you define an image url, you can preview it content and size in IDE
+            A preview image url plugin, when you define an image url, you can preview it content and size in IDE, now support JS/TS/CSS Files
         ]]>
     </description>
 </idea-plugin>
