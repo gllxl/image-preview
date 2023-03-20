@@ -8,7 +8,7 @@ fun getJsVariableContent (element: PsiElement): String {
   return element.node.lastChildNode.text
 }
 
-class JsLineMarkerContributor : RunLineMarkerContributor() {
+class JsLineMarkerContributor : LineMakerContributor() {
   override fun getInfo(element: PsiElement): Info? {
 
     if (element is JSVariable) {

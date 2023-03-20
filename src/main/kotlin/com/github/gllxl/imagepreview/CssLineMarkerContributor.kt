@@ -9,7 +9,7 @@ fun getCSSBackgroundVariableContent (element: PsiElement): String? {
   return element.children.find { it.elementType === CSS_STRING }?.text
 }
 
-class CssLineMarkerContributor : RunLineMarkerContributor() {
+class CssLineMarkerContributor : LineMakerContributor() {
   override fun getInfo(element: PsiElement): Info? {
     if (element.elementType === CSS_URI) {
       val imageUrl = getCSSBackgroundVariableContent(element)
