@@ -6,7 +6,6 @@ import com.intellij.execution.lineMarker.RunLineMarkerContributor
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.project.guessProjectForFile
 import com.intellij.openapi.wm.WindowManager
 
 abstract class LineMakerContributor: RunLineMarkerContributor() {
@@ -17,7 +16,7 @@ abstract class LineMakerContributor: RunLineMarkerContributor() {
 
     val previewAction = object : AnAction("Preview", "Preview", AllIcons.Debugger.Watch) {
       override fun actionPerformed(e: AnActionEvent) {
-        PreviewPopup.show(WindowManager.getInstance().suggestParentWindow(guessProjectForFile(null)), image)
+        PreviewPopup.show(WindowManager.getInstance().suggestParentWindow(null), image)
       }
     }
 

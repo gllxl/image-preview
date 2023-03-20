@@ -17,13 +17,13 @@ class PreviewPopup {
 
     fun show(window: Window?, image: BufferedImage) {
       val panel = JPanel()
-      val image = ImageIcon(image)
-      val width = image.iconWidth;
-      val height = image.iconHeight;
+      val imageIcon = ImageIcon(image)
+      val width = imageIcon.iconWidth;
+      val height = imageIcon.iconHeight;
       val title = "$width * $height"
-      panel.add(JLabel(image), BorderLayout.CENTER)
+      panel.add(JLabel(imageIcon), BorderLayout.CENTER)
       val r = if (window != null) window.bounds else GraphicsEnvironment.getLocalGraphicsEnvironment().defaultScreenDevice.defaultConfiguration.bounds
-      val point = Point((r.width - image.iconWidth) / 2, (r.height - image.iconHeight) / 2)
+      val point = Point((r.width - imageIcon.iconWidth) / 2, (r.height - imageIcon.iconHeight) / 2)
       val location = if (window != null) RelativePoint(window, point) else RelativePoint(point)
       JBPopupFactory.getInstance().createComponentPopupBuilder(panel, panel)
         .setTitle(title)

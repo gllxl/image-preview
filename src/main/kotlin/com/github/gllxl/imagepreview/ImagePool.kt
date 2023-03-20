@@ -1,8 +1,8 @@
 package com.github.gllxl.imagepreview
 
 import com.intellij.util.net.HttpConfigurable
-import org.apache.commons.httpclient.util.HttpURLConnection
 import java.awt.image.BufferedImage
+import java.net.HttpURLConnection
 import javax.imageio.ImageIO
 
 class ImagePool {
