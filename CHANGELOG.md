@@ -2,6 +2,11 @@
 
 # image-preview Changelog
 
+## [0.1.1] - 2023-03-20
+
+### Fixed
+- fix popup position
+
 ## [0.1.0] - 2023-03-16
 
 ### Added
