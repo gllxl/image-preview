@@ -9,7 +9,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.wm.WindowManager
 
 abstract class LineMakerContributor: RunLineMarkerContributor() {
-  private val imagePool = ImagePool()
+  private val imagePool = ImagePool
 
   fun getLineMaker (imgUrl: String): Info? {
     val image = imagePool.getImageByUrl(imgUrl) ?: return null

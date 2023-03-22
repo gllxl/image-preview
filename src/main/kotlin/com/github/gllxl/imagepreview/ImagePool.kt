@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage
 import java.net.HttpURLConnection
 import javax.imageio.ImageIO
 
-class ImagePool {
+object ImagePool {
 
   private val pool = java.util.HashMap<String, BufferedImage>()
 
