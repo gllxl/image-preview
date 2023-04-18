@@ -10,12 +10,12 @@ object ImagePool {
   private val pool = java.util.HashMap<String, BufferedImage>()
 
   private fun hasImageInPools(url: String): Boolean {
-    println("hasImageInPools -> " + pool.containsKey(url))
+//    println("hasImageInPools -> " + pool.containsKey(url))
     return pool.containsKey(url)
   }
 
   fun getImageByUrl (imgUrl: String): BufferedImage? {
-    println("getImageByUrl$imgUrl")
+//    println("getImageByUrl$imgUrl")
 
     val isImage = isImageUrl(imgUrl);
 
@@ -24,22 +24,36 @@ object ImagePool {
     }
 
     if (hasImageInPools(imgUrl)) {
-      println("hasImageInPools -> $imgUrl")
+//      println("hasImageInPools -> $imgUrl")
       return pool[imgUrl]
     }
 
-    println("start fetch -> $imgUrl")
+//    println("start fetch -> $imgUrl")
 
     val config = HttpConfigurable.getInstance()
-    val res = config.openHttpConnection(imgUrl)
 
-    val image = ImageIO.read(res.inputStream)
+    try {
+      val res = config.openHttpConnection(imgUrl)
 
-    if (res.responseCode != HttpURLConnection.HTTP_OK) {
+      if (res.responseCode != HttpURLConnection.HTTP_OK ) {
+        return null
+      }
+
+      val image = ImageIO.read(res.inputStream)
+
+      pool[imgUrl] = image
+
+      return image
+    } catch (e: Error) {
       return null
     }
-    pool[imgUrl] = image
 
-    return image
+  }
+
+  fun getImageFromPool (imgUrl: String): BufferedImage? {
+    if (hasImageInPools(imgUrl)) {
+      return pool[imgUrl]
+    }
+    return null
   }
 }
