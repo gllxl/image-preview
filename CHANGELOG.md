@@ -2,6 +2,15 @@
 
 # image-preview Changelog
 
+## [0.1.3] - 2023-04-19
+
+### Added
+-  Added Line Painter ( show image size )
+-  Support 2023.1
+
+### Fixed
+- Fix the error caused by wrong URL
+
 ## [0.1.2] - 2023-03-23
 
 ### Added
