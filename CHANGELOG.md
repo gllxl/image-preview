@@ -2,6 +2,11 @@
 
 # image-preview Changelog
 
+## [0.1.4] - 2023-04-20
+
+### Fixed
+-  Fixed LinePainter wrong display
+
 ## [0.1.3] - 2023-04-19
 
 ### Added

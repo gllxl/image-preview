@@ -20,8 +20,8 @@ class LinePainter : EditorLinePainter() {
       val targetImage = getImageByUrl(imgUrl)
       if (targetImage is BufferedImage) {
         val imageIcon = ImageIcon(targetImage)
-        val width = imageIcon.iconWidth;
-        val height = imageIcon.iconHeight;
+        val width = imageIcon.iconWidth
+        val height = imageIcon.iconHeight
         text += "$width * $height"
       }
     }

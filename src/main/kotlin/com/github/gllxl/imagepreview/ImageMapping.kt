@@ -1,11 +1,6 @@
 package com.github.gllxl.imagepreview
 
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.util.net.HttpConfigurable
-import java.awt.image.BufferedImage
-import java.net.HttpURLConnection
-import java.util.HashMap
-import javax.imageio.ImageIO
 
 object ImageMapping {
 
@@ -16,17 +11,25 @@ object ImageMapping {
   }
 
   fun setLineMapping(file: VirtualFile, lineNumber: Number, imgUrl: String) {
+    println("setLineMapping$lineNumber")
     val inHashMap = HashMap<Number, String>()
     inHashMap[lineNumber] = imgUrl
+
     val target = pool[file]
-    if (hasFileInPools(file)){
-      target?.put(lineNumber,imgUrl)
+    if (hasFileInPools(file)) {
+      target?.put(lineNumber, imgUrl)
+      pool[file]?.let { getKeyByValue(it, imgUrl) }?.forEach {
+        if (it !== lineNumber) {
+          pool[file]?.remove(it)
+        }
+      }
     } else {
       pool[file] = inHashMap
     }
   }
 
   fun getLineMapping(file: VirtualFile, lineNumber: Number): String? {
+    println("getLineMapping$lineNumber")
     return pool[file]?.get(lineNumber)
   }
 

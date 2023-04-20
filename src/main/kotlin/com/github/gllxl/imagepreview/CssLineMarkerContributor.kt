@@ -1,9 +1,9 @@
 package com.github.gllxl.imagepreview
 
-import com.intellij.execution.lineMarker.RunLineMarkerContributor
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
-import com.intellij.psi.css.impl.CssElementTypes.*
+import com.intellij.psi.css.impl.CssElementTypes.CSS_STRING
+import com.intellij.psi.css.impl.CssElementTypes.CSS_URI
 import com.intellij.psi.util.elementType
 import com.intellij.refactoring.suggested.startOffset
 

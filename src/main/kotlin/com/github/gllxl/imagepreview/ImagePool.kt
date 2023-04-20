@@ -17,7 +17,7 @@ object ImagePool {
   fun getImageByUrl (imgUrl: String): BufferedImage? {
 //    println("getImageByUrl$imgUrl")
 
-    val isImage = isImageUrl(imgUrl);
+    val isImage = isImageUrl(imgUrl)
 
     if (!isImage) {
       return null

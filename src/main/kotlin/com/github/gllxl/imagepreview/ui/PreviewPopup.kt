@@ -18,8 +18,8 @@ class PreviewPopup {
     fun show(window: Window?, image: BufferedImage) {
       val panel = JPanel()
       val imageIcon = ImageIcon(image)
-      val width = imageIcon.iconWidth;
-      val height = imageIcon.iconHeight;
+      val width = imageIcon.iconWidth
+      val height = imageIcon.iconHeight
       val title = "$width * $height"
       panel.add(JLabel(imageIcon), BorderLayout.CENTER)
       val r = if (window != null) window.bounds else GraphicsEnvironment.getLocalGraphicsEnvironment().defaultScreenDevice.defaultConfiguration.bounds
