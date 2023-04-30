@@ -6,6 +6,7 @@ import com.intellij.openapi.editor.markup.EffectType
 import com.intellij.openapi.editor.markup.TextAttributes
 import java.awt.Color
 import java.awt.Font
+import java.text.DecimalFormat
 
 
 fun isImageUrl(url: String): Boolean {
@@ -39,4 +40,11 @@ fun getKeyByValue(map:HashMap<Number, String>, value: String): ArrayList<Number?
     }
   }
   return keyList
+}
+
+fun readableFileSize(size: Int): String? {
+  if (size <= 0) return "0"
+  val units = arrayOf("B", "kB", "MB", "GB", "TB")
+  val digitGroups = (Math.log10(size.toDouble()) / Math.log10(1024.0)).toInt()
+  return DecimalFormat("#,##0.#").format(size / Math.pow(1024.0, digitGroups.toDouble())) + " " + units[digitGroups]
 }

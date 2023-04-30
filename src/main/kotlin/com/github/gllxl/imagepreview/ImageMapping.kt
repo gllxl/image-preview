@@ -29,7 +29,6 @@ object ImageMapping {
   }
 
   fun getLineMapping(file: VirtualFile, lineNumber: Number): String? {
-    println("getLineMapping$lineNumber")
     return pool[file]?.get(lineNumber)
   }
 

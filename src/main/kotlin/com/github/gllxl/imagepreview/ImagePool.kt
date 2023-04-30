@@ -39,6 +39,9 @@ object ImagePool {
         return null
       }
 
+      println("res.contentLength" + res.contentLength)
+      println("res.readableFileSize" + readableFileSize(res.contentLength))
+
       val image = ImageIO.read(res.inputStream)
 
       pool[imgUrl] = image
