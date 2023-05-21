@@ -42,7 +42,7 @@ fun getKeyByValue(map:HashMap<Number, String>, value: String): ArrayList<Number?
   return keyList
 }
 
-fun readableFileSize(size: Int): String? {
+fun readableFileSize(size: Int): String {
   if (size <= 0) return "0"
   val units = arrayOf("B", "kB", "MB", "GB", "TB")
   val digitGroups = (Math.log10(size.toDouble()) / Math.log10(1024.0)).toInt()

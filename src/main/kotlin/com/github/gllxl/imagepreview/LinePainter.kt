@@ -17,12 +17,13 @@ class LinePainter : EditorLinePainter() {
     val imgUrl = ImageMapping.getLineMapping(file, line)
 
     if (imgUrl is String) {
-      val targetImage = getImageByUrl(imgUrl)
+      val targetImage = getImageByUrl(imgUrl)?.imageBuffered
+      val targetImageSize = getImageByUrl(imgUrl)?.imageSize
       if (targetImage is BufferedImage) {
         val imageIcon = ImageIcon(targetImage)
         val width = imageIcon.iconWidth
         val height = imageIcon.iconHeight
-        text += "$width * $height"
+        text += "$width * $height ($targetImageSize)"
       }
     }
     val textAttributes = getHandlerAttributes()

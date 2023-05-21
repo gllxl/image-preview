@@ -2,6 +2,11 @@
 
 # image-preview Changelog
 
+## [0.1.5] - 2023-05-21
+
+### Added
+-  Added image size info
+
 ## [0.1.4] - 2023-04-20
 
 ### Fixed

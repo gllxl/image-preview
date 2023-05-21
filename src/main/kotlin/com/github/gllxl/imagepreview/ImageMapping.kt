@@ -11,7 +11,6 @@ object ImageMapping {
   }
 
   fun setLineMapping(file: VirtualFile, lineNumber: Number, imgUrl: String) {
-    println("setLineMapping$lineNumber")
     val inHashMap = HashMap<Number, String>()
     inHashMap[lineNumber] = imgUrl
 

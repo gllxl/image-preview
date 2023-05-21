@@ -16,7 +16,7 @@ abstract class LineMakerContributor: RunLineMarkerContributor() {
 
     val previewAction = object : AnAction("Preview", "Preview", AllIcons.Debugger.Watch) {
       override fun actionPerformed(e: AnActionEvent) {
-        PreviewPopup.show(WindowManager.getInstance().suggestParentWindow(null), image)
+        PreviewPopup.show(WindowManager.getInstance().suggestParentWindow(null), image.imageBuffered)
       }
     }
 
