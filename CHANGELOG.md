@@ -5,6 +5,11 @@
 ## [0.1.6] - 2023-07-11
 
 ### Chore
+-  Support 2024.1
+
+## [0.1.6] - 2023-07-11
+
+### Chore
 -  Remove plugin version limit
 
 ## [0.1.5] - 2023-05-21
