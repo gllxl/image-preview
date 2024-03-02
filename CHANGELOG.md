@@ -2,7 +2,7 @@
 
 # image-preview Changelog
 
-## [0.1.6] - 2023-07-11
+## [0.1.7] - 2024-03-2
 
 ### Chore
 -  Support 2024.1
