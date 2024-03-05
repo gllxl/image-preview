@@ -10,7 +10,7 @@ import java.text.DecimalFormat
 
 
 fun isImageUrl(url: String): Boolean {
-  val regex = "^(http|https)://.*(jpg|jpeg|png|gif|bmp|webp)$".toRegex(RegexOption.IGNORE_CASE)
+  val regex = "^(http|https)://.*(jpg|jpeg|png|gif|bmp|webp|svg)$".toRegex(RegexOption.IGNORE_CASE)
   return regex.containsMatchIn(url)
 }
 
