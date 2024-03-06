@@ -1,7 +1,7 @@
 package com.github.gllxl.imagepreview
 
 import com.github.gllxl.imagepreview.ui.PreviewPopup
-import com.github.gllxl.imagepreview.ui.previewIcon
+import com.github.gllxl.imagepreview.ui.getPreviewIcon
 import com.intellij.execution.lineMarker.RunLineMarkerContributor
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.actionSystem.AnAction
@@ -20,7 +20,7 @@ abstract class LineMakerContributor: RunLineMarkerContributor() {
       }
     }
 
-    return Info(previewIcon, arrayOf(previewAction)) {
+    return Info(getPreviewIcon(image), arrayOf(previewAction)) {
       "preview image"
     }
   }
