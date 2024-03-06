@@ -2,13 +2,23 @@ package com.github.gllxl.imagepreview
 
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
-import com.intellij.psi.css.impl.CssElementTypes.CSS_STRING
-import com.intellij.psi.css.impl.CssElementTypes.CSS_URI
+import com.intellij.psi.css.impl.CssElementTypes.*
 import com.intellij.psi.util.elementType
 import com.intellij.refactoring.suggested.startOffset
 
 fun getCSSBackgroundVariableContent (element: PsiElement): String? {
-  return element.children.find { it.elementType === CSS_STRING }?.text
+  val children = element.children;
+  val cssVal = children.find { it.elementType === CSS_STRING }?.text
+  if (cssVal is String) {
+    return cssVal
+  } else {
+    val cssTerm = children.find { it.elementType === CSS_TERM }
+
+    if (cssTerm is PsiElement) {
+      return cssTerm.children.find { it.elementType === CSS_STRING }?.text
+    }
+    return null
+  }
 }
 
 class CssLineMarkerContributor : LineMakerContributor() {
