@@ -16,7 +16,11 @@
 - [ ] Click the <kbd>Watch</kbd> button on the top of the [IntelliJ Platform Plugin Template][template] to be notified about releases containing new features and fixes.
 
 <!-- Plugin description -->
-A preview image plugin, when you define an image url, you can preview it content and size in IDE
+A preview image url plugin, when you define an image url, you can preview it content and size in IDE,
+
+- JS/TS/CSS files is supported;
+- Image url is supported; (local paths are not supported)
+
 <!-- Plugin description end -->
 
 ## Installation

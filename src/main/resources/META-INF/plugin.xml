@@ -11,6 +11,7 @@
     <extensions defaultExtensionNs="com.intellij">
         <runLineMarkerContributor language="JavaScript" implementationClass="com.github.gllxl.imagepreview.JsLineMarkerContributor"/>
         <runLineMarkerContributor language="CSS" implementationClass="com.github.gllxl.imagepreview.CssLineMarkerContributor"/>
+        <editor.linePainter implementation="com.github.gllxl.imagepreview.LinePainter"/>
     </extensions>
 
     <applicationListeners>
@@ -19,7 +20,11 @@
 
     <description>
         <![CDATA[
-            A preview image url plugin, when you define an image url, you can preview it content and size in IDE, now support JS/TS/CSS Files
+            A preview image url plugin, when you define an image url, you can preview it content and size in IDE
+
+            <li> JS/TS/CSS files is supported;
+            <li> Image url is supported; (local paths are not supported)
+
         ]]>
     </description>
 </idea-plugin>
