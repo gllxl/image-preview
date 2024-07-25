@@ -1,10 +1,8 @@
 package com.github.gllxl.imagepreview.settings
 
-import com.intellij.openapi.observable.properties.AtomicProperty
 import com.intellij.openapi.options.ConfigurableUi
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.components.JBCheckBox
-import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import javax.swing.JComponent
 
@@ -15,21 +13,39 @@ class ImagePreviewConfigurableUI(setting: ImagePreviewSettings) : ConfigurableUi
 
   private val ui: DialogPanel = panel {
     var tinyPreviewCheckbox: Cell<JBCheckBox>
-    row("") {
-      tinyPreviewCheckbox = checkBox("Show preview icon")
-        .align(AlignX.FILL)
-        .gap(RightGap.SMALL)
-        .resizableColumn().apply {
-          component.toolTipText = "You can put here whatever you want, $$ is the selected variable, {FP} filepath, {FN} filename, {LN} line number "
-        }
-        .bindSelected(setting::isShowPreviewIcon)
-        .whenStateChangedFromUi { isChecked ->
-          if (isChecked) {
-            return@whenStateChangedFromUi
-          }
-        }
+    var tinyPreviewIconType: Cell<JBCheckBox>
 
-    }.layout(RowLayout.PARENT_GRID)
+    group ("Preview")  {
+      row("") {
+        tinyPreviewCheckbox = checkBox("Show preview icon")
+          .align(AlignX.LEFT)
+          .gap(RightGap.SMALL)
+          .resizableColumn().apply {
+            component.toolTipText = "If unchecked, the preview will be a thumbnail of the image"
+          }
+          .bindSelected(setting::isShowPreviewIcon)
+          .whenStateChangedFromUi { isChecked ->
+            if (isChecked) {
+              return@whenStateChangedFromUi
+            }
+          }
+      }
+      row("") {
+        tinyPreviewIconType = checkBox("Show actual image preview")
+          .align(AlignX.LEFT)
+          .gap(RightGap.SMALL)
+          .resizableColumn().apply {
+            component.toolTipText = "If unchecked, the icon will be a default icon"
+          }
+          .bindSelected(setting::isShowActualImageIcon)
+          .whenStateChangedFromUi { isChecked ->
+            if (isChecked) {
+              return@whenStateChangedFromUi
+            }
+          }
+      }
+    }
+
   }
 
   override fun reset(settings: ImagePreviewSettings) {

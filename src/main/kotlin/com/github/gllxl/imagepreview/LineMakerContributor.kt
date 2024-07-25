@@ -1,6 +1,8 @@
 package com.github.gllxl.imagepreview
 
+import com.github.gllxl.imagepreview.settings.ImagePreviewSettings
 import com.github.gllxl.imagepreview.ui.PreviewPopup
+import com.github.gllxl.imagepreview.ui.defaultPreviewIcon
 import com.github.gllxl.imagepreview.ui.getPreviewIcon
 import com.intellij.execution.lineMarker.RunLineMarkerContributor
 import com.intellij.icons.AllIcons
@@ -20,7 +22,13 @@ abstract class LineMakerContributor: RunLineMarkerContributor() {
       }
     }
 
-    return Info(getPreviewIcon(image), arrayOf(previewAction)) {
+    if (!ImagePreviewSettings.instance.isShowPreviewIcon) {
+      return null;
+    }
+
+    val previewIcon = if (ImagePreviewSettings.instance.isShowActualImageIcon) getPreviewIcon(image) else defaultPreviewIcon
+
+    return Info(previewIcon, arrayOf(previewAction)) {
       "preview image"
     }
   }
