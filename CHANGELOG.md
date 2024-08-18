@@ -2,7 +2,17 @@
 
 # image-preview Changelog
 
-## [0.1.7] - 2024-03-2
+## [0.2.0] - 2024-08-17
+
+### Added
+- Added a settings panel with a thumbnail display of the actual icons
+- LineMaker Support scss files
+- Support 2024.2 and later
+
+### Chore
+-  Support 2024.1
+
+## [0.1.7] - 2024-03-02
 
 ### Chore
 -  Support 2024.1

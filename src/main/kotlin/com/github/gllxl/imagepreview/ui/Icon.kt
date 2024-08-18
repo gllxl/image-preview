@@ -10,8 +10,8 @@ import javax.swing.Icon
 val defaultPreviewIcon = IconLoader.getIcon("/images/image.svg", JsLineMarkerContributor::class.java)
 
 fun getPreviewIcon (image: ImageDTO): Icon {
-  val tinyImage = image.imageBuffered.getScaledInstance(24, -1, 16)
+  val tinyImage = image.imageBuffered.getScaledInstance(16, -1, 16)
 
-  val icon = IconUtil.toRetinaAwareIcon(ImageUtil.toBufferedImage(tinyImage))
+  val icon = IconUtil.createImageIcon(ImageUtil.toBufferedImage(tinyImage))
   return icon
 }

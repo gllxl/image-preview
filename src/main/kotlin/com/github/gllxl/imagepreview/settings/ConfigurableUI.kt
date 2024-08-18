@@ -21,7 +21,7 @@ class ImagePreviewConfigurableUI(setting: ImagePreviewSettings) : ConfigurableUi
           .align(AlignX.LEFT)
           .gap(RightGap.SMALL)
           .resizableColumn().apply {
-            component.toolTipText = "If unchecked, the preview will be a thumbnail of the image"
+            component.toolTipText = "If checked, an icon previewing the image will be displayed in front of the code line"
           }
           .bindSelected(setting::isShowPreviewIcon)
           .whenStateChangedFromUi { isChecked ->
@@ -31,11 +31,11 @@ class ImagePreviewConfigurableUI(setting: ImagePreviewSettings) : ConfigurableUi
           }
       }
       row("") {
-        tinyPreviewIconType = checkBox("Show actual image preview")
+        tinyPreviewIconType = checkBox("Show thumbnail image")
           .align(AlignX.LEFT)
           .gap(RightGap.SMALL)
           .resizableColumn().apply {
-            component.toolTipText = "If unchecked, the icon will be a default icon"
+            component.toolTipText = "If checked, a thumbnail preview icon of the image will be displayed in front of the code line. Otherwise, a default icon will be displayed"
           }
           .bindSelected(setting::isShowActualImageIcon)
           .whenStateChangedFromUi { isChecked ->
