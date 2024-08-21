@@ -40,7 +40,7 @@ object ImagePool {
       if (res.responseCode != HttpURLConnection.HTTP_OK ) {
         return null
       }
-      val image = ImageIO.read(res.inputStream)
+      val image = ImageIO.read(res.url) ?: return null
 
       pool[imgUrl] = image
       sizePool[imgUrl] = readableFileSize(res.contentLength)

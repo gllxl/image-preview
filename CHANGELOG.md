@@ -2,6 +2,11 @@
 
 # image-preview Changelog
 
+## [0.2.1] - 2024-08-21
+
+### Fixed
+- Temporarily removed svg support
+
 ## [0.2.0] - 2024-08-17
 
 ### Added
