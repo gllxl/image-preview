@@ -1,7 +1,7 @@
 package com.github.gllxl.imagepreview
 
 import com.github.gllxl.imagepreview.dto.ImageDTO
-import com.intellij.util.net.HttpConfigurable
+import com.intellij.util.net.HttpConnectionUtils.openHttpConnection
 import java.awt.image.BufferedImage
 import java.net.HttpURLConnection
 import javax.imageio.ImageIO
@@ -20,37 +20,38 @@ object ImagePool {
 //    println("getImageByUrl$imgUrl")
 
     val isImage = isImageUrl(imgUrl)
+    val isSvg = isSvgUrl(imgUrl)
 
-    if (!isImage) {
+    if (!isImage && !isSvg) {
       return null
     }
 
     if (hasImageInPools(imgUrl)) {
-//      println("hasImageInPools -> $imgUrl")
       return pool[imgUrl]?.let { sizePool[imgUrl]?.let { it1 -> ImageDTO(it, it1) } }
     }
 
-//    println("start fetch -> $imgUrl")
+    if (isSvg) {
+      val svg = loadSVG(imgUrl)
+      return svg?.let { ImageDTO(it, "100") }
+    } else {
+      try {
+        val res = openHttpConnection(imgUrl)
 
-    val config = HttpConfigurable.getInstance()
+        if (res.responseCode != HttpURLConnection.HTTP_OK ) {
+          return null
+        }
+        val image = ImageIO.read(res.url) ?: return null
 
-    try {
-      val res = config.openHttpConnection(imgUrl)
+        pool[imgUrl] = image
+        sizePool[imgUrl] = readableFileSize(res.contentLength)
 
-      if (res.responseCode != HttpURLConnection.HTTP_OK ) {
+        return ImageDTO(image, readableFileSize(res.contentLength))
+
+      } catch (e: Error) {
         return null
       }
-      val image = ImageIO.read(res.url) ?: return null
-
-      pool[imgUrl] = image
-      sizePool[imgUrl] = readableFileSize(res.contentLength)
-
-      return ImageDTO(image, readableFileSize(res.contentLength))
-
-    } catch (e: Error) {
-      return null
     }
-
+    return null
   }
 
   fun getImageFromPool (imgUrl: String): BufferedImage? {

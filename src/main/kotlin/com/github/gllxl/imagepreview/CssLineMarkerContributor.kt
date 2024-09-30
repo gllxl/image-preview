@@ -4,7 +4,7 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.css.impl.CssElementTypes.*
 import com.intellij.psi.util.elementType
-import com.intellij.refactoring.suggested.startOffset
+import com.intellij.psi.util.startOffset
 
 fun getCSSBackgroundVariableContent (element: PsiElement): String? {
   val children = element.children;

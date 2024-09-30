@@ -4,7 +4,7 @@ import com.github.gllxl.imagepreview.ImageMapping.setLineMapping
 import com.intellij.lang.javascript.psi.JSVariable
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
-import com.intellij.refactoring.suggested.startOffset
+import com.intellij.psi.util.startOffset
 
 fun getJsVariableContent (element: PsiElement): String {
   return element.node.lastChildNode.text

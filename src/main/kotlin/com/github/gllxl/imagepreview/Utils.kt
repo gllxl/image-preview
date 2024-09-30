@@ -14,6 +14,11 @@ fun isImageUrl(url: String): Boolean {
   return regex.containsMatchIn(url)
 }
 
+fun isSvgUrl(url: String): Boolean {
+  val regex = "^(http|https)://.*(svg)$".toRegex(RegexOption.IGNORE_CASE)
+  return regex.containsMatchIn(url)
+}
+
 fun removeUrlQuotes(url: String): String {
   return url.replace("\"", "").replace("\'", "")
 }

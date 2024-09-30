@@ -24,6 +24,22 @@ version = properties("pluginVersion")
 // Configure project's dependencies
 repositories {
     mavenCentral()
+    maven("https://jitpack.io")
+}
+
+dependencies {
+    val kotlinxHtmlVersion = "0.11.0"
+    // include for JVM target
+    implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:$kotlinxHtmlVersion")
+
+    // include for Common module
+    implementation("org.jetbrains.kotlinx:kotlinx-html:$kotlinxHtmlVersion")
+    implementation("com.github.nwillc:ksvg:2.2.0")
+    implementation("com.kitfox.svg:svg-salamander:1.0")
+    implementation("org.apache.xmlgraphics:batik-transcoder:1.17")
+    implementation("org.apache.xmlgraphics:batik-codec:1.17")
+    implementation("xerces:xercesImpl:2.12.2")
+    implementation("xalan:xalan:2.7.2")
 }
 
 // Set the JVM language level used to build the project. Use Java 11 for 2020.3+, and Java 17 for 2022.2+.
