@@ -21,7 +21,7 @@ class ImagePreviewConfigurableUI(setting: ImagePreviewSettings) : ConfigurableUi
           .align(AlignX.LEFT)
           .gap(RightGap.SMALL)
           .resizableColumn().apply {
-            component.toolTipText = "If checked, an icon previewing the image will be displayed in front of the code line"
+            component.toolTipText = "If checked, an icon previewing the image will be displayed in front of the code line."
           }
           .bindSelected(setting::isShowPreviewIcon)
           .whenStateChangedFromUi { isChecked ->
