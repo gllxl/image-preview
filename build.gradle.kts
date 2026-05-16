@@ -100,7 +100,10 @@ intellijPlatform {
 
         ideaVersion {
             sinceBuild.set(properties("pluginSinceBuild"))
-            untilBuild.set(properties("pluginUntilBuild"))
+            val pluginUntilBuild = properties("pluginUntilBuild")
+            if (pluginUntilBuild.isNotBlank()) {
+                untilBuild.set(pluginUntilBuild)
+            }
         }
     }
 
