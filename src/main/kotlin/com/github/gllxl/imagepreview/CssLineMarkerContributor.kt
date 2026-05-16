@@ -1,42 +1,39 @@
 package com.github.gllxl.imagepreview
 
+import com.github.gllxl.imagepreview.extractor.CssImageReferenceExtractor
+import com.github.gllxl.imagepreview.service.imagePreviewService
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
-import com.intellij.psi.css.impl.CssElementTypes.*
+import com.intellij.psi.css.impl.CssElementTypes.CSS_URI
+import com.intellij.psi.css.impl.CssElementTypes.CSS_URI_START
 import com.intellij.psi.util.elementType
-import com.intellij.refactoring.suggested.startOffset
-
-fun getCSSBackgroundVariableContent (element: PsiElement): String? {
-  val children = element.children;
-  val cssVal = children.find { it.elementType === CSS_STRING }?.text
-  if (cssVal is String) {
-    return cssVal
-  } else {
-    val cssTerm = children.find { it.elementType === CSS_TERM }
-
-    if (cssTerm is PsiElement) {
-      return cssTerm.children.find { it.elementType === CSS_STRING }?.text
-    }
-    return null
-  }
-}
 
 class CssLineMarkerContributor : LineMakerContributor() {
   override fun getInfo(element: PsiElement): Info? {
-    if (element.elementType === CSS_URI) {
-      val imageUrl = getCSSBackgroundVariableContent(element)
+    val cssUriElement = cssUriElementForLineMarker(element) ?: return null
+    val rawImageReference = CssImageReferenceExtractor.extractUrl(cssUriElement) ?: return null
 
-      if (imageUrl != null ) {
+    val document = PsiDocumentManager.getInstance(element.project).getDocument(element.containingFile) ?: return null
+    val virtualFile = element.containingFile.virtualFile ?: return null
+    val lineNumber = document.getLineNumber(element.textOffset)
+    val imageService = imagePreviewService(element.project)
+    val imageReference = imageService.resolveImageReference(rawImageReference, virtualFile) ?: return null
+    imageService.references.setLineMapping(virtualFile, lineNumber, imageReference)
 
-        val document = PsiDocumentManager.getInstance(element.project).getDocument(element.containingFile) ?: return null
-        val lineNumber = document.getLineNumber(element.startOffset)
-        ImageMapping.setLineMapping(element.containingFile.virtualFile, lineNumber, removeUrlQuotes(imageUrl))
+    return getLineMaker(imageReference, element.project)
+  }
 
-        return getLineMaker(removeUrlQuotes(imageUrl))
-      }
-      return null
-    }
+}
+
+private fun cssUriElementForLineMarker(element: PsiElement): PsiElement? {
+  if (element.elementType !== CSS_URI_START) {
     return null
   }
 
+  val parent = element.parent ?: return null
+  if (parent.elementType !== CSS_URI) {
+    return null
+  }
+
+  return parent
 }

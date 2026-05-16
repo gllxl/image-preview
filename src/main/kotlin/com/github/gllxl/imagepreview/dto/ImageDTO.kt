@@ -1,7 +1,5 @@
 package com.github.gllxl.imagepreview.dto
 
-import java.awt.image.BufferedImage
+import com.github.gllxl.imagepreview.model.ImageResource
 
-class ImageDTO(var imageBuffered: BufferedImage, var imageSize: String) {
-
-}
+typealias ImageDTO = ImageResource

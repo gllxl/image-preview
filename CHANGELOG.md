@@ -2,7 +2,31 @@
 
 # image-preview Changelog
 
-## [0.1.7] - 2024-03-2
+## [0.4.0] - 2026-05-15
+
+### Added
+- Restore and expand the Image Preview settings page under Tools.
+- Add preview controls for gutter icons, actual thumbnails, and inline image size text.
+- Add loading controls for remote images, local images, and click-only preview loading.
+- Add image size limits, popup fit-to-screen scaling, preview cache clearing, and remote allowed-domain filtering.
+- Add tests for settings persistence, domain filtering, loading policy, plugin registration, thumbnail icon behavior, popup sizing, and local SVG loading.
+
+## [0.2.1] - 2024-08-21
+
+### Fixed
+- Temporarily removed svg support
+
+## [0.2.0] - 2024-08-17
+
+### Added
+- Added a settings panel with a thumbnail display of the actual icons
+- LineMaker Support scss files
+- Support 2024.2 and later
+
+### Chore
+-  Support 2024.1
+
+## [0.1.7] - 2024-03-02
 
 ### Chore
 -  Support 2024.1
@@ -50,4 +74,3 @@
 
 ### Added
 - LineMaker Support JS/TS Files
-

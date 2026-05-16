@@ -1,32 +1,22 @@
 package com.github.gllxl.imagepreview
 
-import com.github.gllxl.imagepreview.ImageMapping.setLineMapping
-import com.intellij.lang.javascript.psi.JSVariable
+import com.github.gllxl.imagepreview.extractor.JsImageReferenceExtractor
+import com.github.gllxl.imagepreview.service.imagePreviewService
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
-import com.intellij.refactoring.suggested.startOffset
-
-fun getJsVariableContent (element: PsiElement): String {
-  return element.node.lastChildNode.text
-}
 
 class JsLineMarkerContributor : LineMakerContributor() {
   override fun getInfo(element: PsiElement): Info? {
+    val rawImageReference = JsImageReferenceExtractor.extractUrl(element) ?: return null
 
-    if (element is JSVariable) {
+    val document = PsiDocumentManager.getInstance(element.project).getDocument(element.containingFile) ?: return null
+    val virtualFile = element.containingFile.virtualFile ?: return null
+    val lineNumber = document.getLineNumber(element.textOffset)
+    val imageService = imagePreviewService(element.project)
+    val imageReference = imageService.resolveImageReference(rawImageReference, virtualFile) ?: return null
+    imageService.references.setLineMapping(virtualFile, lineNumber, imageReference)
 
-      if (!element.firstChild.isValid) {
-        return null
-      }
-
-      val document = PsiDocumentManager.getInstance(element.project).getDocument(element.containingFile) ?: return null
-      val lineNumber = document.getLineNumber(element.startOffset)
-      val imgUrl = getJsVariableContent(element)
-      setLineMapping(element.containingFile.virtualFile, lineNumber, removeUrlQuotes(imgUrl))
-
-      return getLineMaker(removeUrlQuotes(imgUrl))
-    }
-    return null
+    return getLineMaker(imageReference, element.project)
   }
 
 }

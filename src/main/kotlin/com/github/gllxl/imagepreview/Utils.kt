@@ -6,16 +6,104 @@ import com.intellij.openapi.editor.markup.EffectType
 import com.intellij.openapi.editor.markup.TextAttributes
 import java.awt.Color
 import java.awt.Font
+import java.net.URI
 import java.text.DecimalFormat
+import kotlin.math.min
 
+private val supportedImageExtensions = setOf("jpg", "jpeg", "png", "gif", "bmp", "webp", "svg")
 
 fun isImageUrl(url: String): Boolean {
-  val regex = "^(http|https)://.*(jpg|jpeg|png|gif|bmp|webp|svg)$".toRegex(RegexOption.IGNORE_CASE)
-  return regex.containsMatchIn(url)
+  val extension = imageUrlExtension(url) ?: return false
+  return extension in supportedImageExtensions
+}
+
+fun isImageReference(reference: String): Boolean {
+  val extension = imageReferenceExtension(reference) ?: return false
+  return extension in supportedImageExtensions
+}
+
+fun imageUrlExtension(url: String): String? {
+  return try {
+    val uri = URI(url.trim())
+    val scheme = uri.scheme?.lowercase()
+    if (scheme != "http" && scheme != "https") {
+      return null
+    }
+
+    uri.path
+      ?.substringAfterLast('/', "")
+      ?.substringAfterLast('.', "")
+      ?.lowercase()
+      ?.takeIf { it.isNotBlank() }
+  } catch (e: Exception) {
+    null
+  }
+}
+
+fun imageReferenceExtension(reference: String): String? {
+  val trimmed = reference.trim()
+  if (trimmed.startsWith("//")) {
+    return null
+  }
+
+  imageUrlExtension(trimmed)?.let {
+    return it
+  }
+
+  if (trimmed.startsWith("http:", true) || trimmed.startsWith("https:", true)) {
+    return null
+  }
+
+  if (trimmed.contains("://") && !trimmed.startsWith("file:", true)) {
+    return null
+  }
+
+  if (hasUnsupportedUriScheme(trimmed)) {
+    return null
+  }
+
+  return localPathExtension(trimmed)
+}
+
+private fun hasUnsupportedUriScheme(reference: String): Boolean {
+  val scheme = try {
+    URI(reference).scheme?.lowercase()
+  } catch (e: Exception) {
+    null
+  } ?: return false
+
+  if (scheme == "file") {
+    return false
+  }
+
+  if (scheme.length == 1 && reference.length > 2 && reference[1] == ':' && (reference[2] == '\\' || reference[2] == '/')) {
+    return false
+  }
+
+  return true
+}
+
+private fun localPathExtension(path: String): String? {
+  val normalized = path
+    .substringBefore('#')
+    .substringBefore('?')
+    .trim()
+    .trimEnd('/', '\\')
+
+  if (normalized.isBlank()) {
+    return null
+  }
+
+  return normalized
+    .substringAfterLast('/', normalized)
+    .substringAfterLast('\\')
+    .substringAfterLast('.', "")
+    .lowercase()
+    .takeIf { it.isNotBlank() }
 }
 
 fun removeUrlQuotes(url: String): String {
-  return url.replace("\"", "").replace("\'", "")
+  return url.trim().trim('"', '\'', '`')
 }
 
 fun getTextColor(): Color? {
@@ -27,24 +115,9 @@ fun getTextColor(): Color? {
 fun getHandlerAttributes(isItalic: Boolean = true) =
   TextAttributes(getTextColor(), null, null, EffectType.BOXED, if (isItalic) Font.ITALIC else Font.PLAIN)
 
-fun getKeyByValue(map:HashMap<Number, String>, value: String): ArrayList<Number?> {
-  val keyList = ArrayList<Number?>()
-  var key: Number? = null
-  val set: Set<Map.Entry<Number, String>> = map.entries
-  val it: Iterator<*> = set.iterator()
-  while (it.hasNext()) {
-    val (key1, value1) = it.next() as Map.Entry<Number, String>
-    if (value1 == value) {
-      key = key1
-      keyList.add(key)
-    }
-  }
-  return keyList
-}
-
-fun readableFileSize(size: Int): String {
+fun readableFileSize(size: Long): String {
   if (size <= 0) return "0"
   val units = arrayOf("B", "kB", "MB", "GB", "TB")
-  val digitGroups = (Math.log10(size.toDouble()) / Math.log10(1024.0)).toInt()
+  val digitGroups = min((Math.log10(size.toDouble()) / Math.log10(1024.0)).toInt(), units.lastIndex)
   return DecimalFormat("#,##0.#").format(size / Math.pow(1024.0, digitGroups.toDouble())) + " " + units[digitGroups]
 }

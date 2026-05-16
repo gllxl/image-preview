@@ -19,9 +19,13 @@
 A preview image url plugin, when you define an image url, you can preview it content and size in IDE,
 
 - JS/TS/CSS files is supported;
-- Image url is supported; (local paths are not supported)
+- Remote image URLs and local image paths are supported;
 
 <!-- Plugin description end -->
+
+## Settings
+
+Open <kbd>Settings/Preferences</kbd> > <kbd>Tools</kbd> > <kbd>Image Preview</kbd> to configure preview icons, actual thumbnails, inline image size text, automatic loading for remote/local images, click-only preview loading, maximum image size, popup scaling, preview cache clearing, and allowed remote domains.
 
 ## Installation
 
