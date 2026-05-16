@@ -209,7 +209,7 @@ LinkedHashMap<String, ImageResource>(accessOrder = true)
 
 SVG 处理策略：
 
-- 使用 IntelliJ 平台 SVG renderer 渲染，避免直接依赖 AWT 对 SVG 的不可用支持。
+- 使用 Batik 渲染 SVG，避免依赖 IntelliJ 平台内部 SVG API。
 - 预览图最大边长限制为 1024px，防止超大 SVG 生成巨大 `BufferedImage`。
 - `ImageResource.originalWidth/originalHeight` 保留 SVG 原始尺寸，`previewImage` 可以是缩放后的预览图。
 

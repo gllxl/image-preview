@@ -24,6 +24,8 @@ repositories {
 }
 
 dependencies {
+    implementation("org.apache.xmlgraphics:batik-transcoder:1.18")
+
     testImplementation(kotlin("test-junit5"))
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
@@ -120,7 +122,15 @@ intellijPlatform {
 
     pluginVerification {
         ides {
-            recommended()
+            create(
+                providers.gradleProperty("pluginVerifierIdeVersions")
+                    .map { versions ->
+                        versions.split(',')
+                            .map(String::trim)
+                            .filter(String::isNotEmpty)
+                    }
+                    .orRecommended(),
+            )
         }
     }
 }

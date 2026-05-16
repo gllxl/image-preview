@@ -10,7 +10,7 @@ class RefreshScheduler {
       return
     }
 
-    DaemonCodeAnalyzer.getInstance(project).restart(RefreshScheduler::class.java)
+    DaemonCodeAnalyzer.getInstance(project).restart()
     FileEditorManager.getInstance(project).selectedTextEditor?.component?.repaint()
   }
 }

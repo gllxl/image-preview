@@ -32,6 +32,40 @@ class ImageDecoderTest {
   }
 
   @Test
+  fun testSvgViewBoxOnlyUsesViewBoxDimensions() {
+    val svg = """
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 75">
+        <rect width="150" height="75" fill="#4f8cff"/>
+      </svg>
+    """.trimIndent().toByteArray()
+
+    val image = decoder.decode(svg, "https://cdn.example.com/viewbox.svg")
+
+    assertNotNull(image)
+    assertEquals(150, image.previewImage.width)
+    assertEquals(75, image.previewImage.height)
+    assertEquals(150, image.originalWidth)
+    assertEquals(75, image.originalHeight)
+  }
+
+  @Test
+  fun testSvgWithDoctypeIsRenderedWithoutLoadingExternalDtd() {
+    val svg = """
+      <?xml version="1.0" standalone="no"?>
+      <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="16">
+        <rect width="24" height="16" fill="#4f8cff"/>
+      </svg>
+    """.trimIndent().toByteArray()
+
+    val image = decoder.decode(svg, "https://cdn.example.com/exported.svg")
+
+    assertNotNull(image)
+    assertEquals(24, image.previewImage.width)
+    assertEquals(16, image.previewImage.height)
+  }
+
+  @Test
   fun testSvgContentTypeIsHonoredWhenUrlHasDifferentExtension() {
     val svg = """
       <svg xmlns="http://www.w3.org/2000/svg" width="40" height="30">
