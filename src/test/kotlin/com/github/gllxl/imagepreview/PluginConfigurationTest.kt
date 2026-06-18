@@ -15,6 +15,8 @@ class PluginConfigurationTest {
       .newDocumentBuilder()
       .parse(pluginXmlPath().toFile())
 
+    assertEquals("Image Preview", document.getElementsByTagName("name").item(0).textContent)
+
     val configurable = document.getElementsByTagName("applicationConfigurable")
     assertEquals(1, configurable.length)
     assertEquals("tools", configurable.item(0).attributes.getNamedItem("parentId").nodeValue)
@@ -33,6 +35,22 @@ class PluginConfigurationTest {
       "com.github.gllxl.imagepreview.settings.ImagePreviewSettings" in serviceImplementations,
       "ImagePreviewSettings must be registered as an application service",
     )
+
+    val dependencies = document.getElementsByTagName("depends")
+    val dependencyIds = (0 until dependencies.length).map { dependencies.item(it).textContent.trim() }
+    assertTrue("com.intellij.modules.json" in dependencyIds, "JSON plugin dependency must be declared")
+    assertTrue("JavaScript" in dependencyIds, "JavaScript plugin dependency must be declared")
+    assertTrue("com.intellij.css" in dependencyIds, "CSS plugin dependency must be declared")
+
+    val contributors = document.getElementsByTagName("runLineMarkerContributor")
+    val contributorLanguages = (0 until contributors.length).map {
+      contributors.item(it).attributes.getNamedItem("language").nodeValue
+    }
+
+    assertTrue("JavaScript" in contributorLanguages, "JavaScript line marker must be registered")
+    assertTrue("TypeScript" in contributorLanguages, "TypeScript line marker must be registered")
+    assertTrue("JSON" in contributorLanguages, "JSON line marker must be registered")
+    assertTrue("CSS" in contributorLanguages, "CSS line marker must be registered")
   }
 
   private fun pluginXmlPath(): Path {

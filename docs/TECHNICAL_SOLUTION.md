@@ -2,12 +2,12 @@
 
 ## 1. 项目定位
 
-`image-preview` 是一个 JetBrains IDE 插件，用于在 JS/TS/CSS 文件中识别远程图片 URL 和本地图片路径，并在编辑器内提供两类能力：
+`image-preview` 是一个 JetBrains IDE 插件，用于在 JS/TS/JSON/CSS 文件中识别远程图片 URL 和本地图片路径，并在编辑器内提供两类能力：
 
 - 行标记图标：点击后弹出图片预览。
 - 行尾提示：图片加载完成后，在图片 URL 所在行展示宽、高和资源大小。
 
-当前插件支持 `http` / `https` 图片 URL、`file://` URI、绝对路径和相对路径。相对路径会按当前 JS/TS/CSS 文件所在目录解析。支持的图片后缀包括 `jpg`、`jpeg`、`png`、`gif`、`bmp`、`webp`、`svg`。
+当前插件支持 `http` / `https` 图片 URL、`file://` URI、绝对路径和相对路径。相对路径会按当前 JS/TS/JSON/CSS 文件所在目录解析。支持的图片后缀包括 `jpg`、`jpeg`、`png`、`gif`、`bmp`、`webp`、`svg`。
 
 ## 2. 技术栈与运行环境
 
@@ -15,7 +15,7 @@
 - 构建：Gradle Kotlin DSL
 - IDE 插件框架：IntelliJ Platform Gradle Plugin 2.x
 - 目标平台：GoLand 2026.1，平台 build `261.*`
-- 运行依赖：JavaScript 插件、CSS 插件
+- 运行依赖：JavaScript 插件、JSON 插件、CSS 插件
 - 测试框架：JUnit 5 / kotlin-test
 - CI：GitHub Actions
 
@@ -26,14 +26,14 @@
 ```text
 src/main/kotlin/com/github/gllxl/imagepreview/
   CssLineMarkerContributor.kt         CSS url(...) 入口
-  JsLineMarkerContributor.kt          JS/TS 变量入口
+  JsLineMarkerContributor.kt          JS/TS/JSON 图片引用入口
   LineMakerContributor.kt             gutter icon 与 Preview action
   LinePainter.kt                      行尾图片尺寸展示
   Utils.kt                            URL 判断、文本属性、文件大小格式化
 
   extractor/
     ImageReferenceExtractor.kt        URL 提取接口
-    JsImageReferenceExtractor.kt      JS/TS PSI URL 提取
+    JsImageReferenceExtractor.kt      JS/TS/JSON PSI URL 提取
     CssImageReferenceExtractor.kt     CSS PSI URL 提取
 
   model/
@@ -79,7 +79,7 @@ docs/
 
 ```mermaid
 flowchart TD
-  A["JS/CSS PSI element"] --> B["Js/Css LineMarkerContributor"]
+A["JS/TS/JSON/CSS PSI element"] --> B["Js/Css LineMarkerContributor"]
   B --> C["ImageReferenceExtractor"]
   C --> D["ImagePreviewProjectService"]
   D --> E["ImageReferenceResolver"]
@@ -112,8 +112,45 @@ flowchart TD
 
 入口在 `JsLineMarkerContributor` 和 `CssLineMarkerContributor`。它们不直接解析复杂规则，而是委托给 `extractor` 层：
 
-- `JsImageReferenceExtractor`：针对 `JSVariable`，取变量节点最后一个子节点文本，再移除包裹引号。
+- `JsImageReferenceExtractor`：针对 JS/TS 的变量初始化值、对象字段值、数组字符串项，以及 JSON 的对象字段值和数组字符串项，提取静态字符串图片引用。
 - `CssImageReferenceExtractor`：针对 `CSS_URI`，在子节点中寻找 `CSS_STRING` 或 `CSS_TERM -> CSS_STRING`。
+
+JS/TS 识别示例：
+
+```ts
+const avatar = "https://cdn.example.com/avatar.png";
+
+const gallery = [
+  "https://cdn.example.com/gallery/cover.jpg",
+  "./assets/detail.webp",
+];
+
+const profile = {
+  photo: "../images/profile.jpeg",
+  badge: "file:///Users/me/project/public/badge.svg",
+};
+```
+
+JSON 识别示例：
+
+```json
+{
+  "logo": "./assets/logo.svg",
+  "gallery": [
+    "https://cdn.example.com/gallery/one.png",
+    "../images/two.webp"
+  ],
+  "nested": {
+    "emptyState": "./states/empty.svg"
+  }
+}
+```
+
+为了避免误判，JS/TS 动态模板字符串不会被识别：
+
+```ts
+const dynamicAvatar = `./avatars/${userId}.png`;
+```
 
 远程 URL 判断由 `isImageUrl()` 完成，使用 `URI` 解析而不是简单正则：
 
@@ -130,22 +167,24 @@ flowchart TD
 - 相对路径优先按当前文件所在目录解析，缺少当前文件目录时才使用项目根目录。
 - resolver 只做路径规范化，不同步访问文件系统；文件是否存在、是否可读、是否超过大小上限由后台 `LocalImageLoader` 判断。
 
-识别成功后，contributor 将 `(VirtualFile, lineNumber, resolvedSource)` 写入 `ImageReferenceStore`，再返回 gutter 标记。远程 source 保留原 URL，本地 source 规范化为 `file://` URI，方便缓存和加载复用。
+识别成功后，contributor 会按当前文档和命中的文本范围写入 `ImageReferenceStore`，再返回 gutter 标记。远程 source 保留原 URL，本地 source 规范化为 `file://` URI，方便缓存和加载复用。
 
 ## 6. 行映射
 
 `ImageReferenceStore` 维护：
 
 ```text
-WeakHashMap<VirtualFile, MutableMap<Int, String>>
+WeakHashMap<VirtualFile, MutableList<ImageReferenceMapping>>
 ```
 
 设计要点：
 
 - key 使用 `VirtualFile`，同名不同文件不会互相污染。
-- 行号使用 `Int`，避免装箱对象比较导致误删。
+- 新路径优先记录 `Document + TextRange + rawImageReference`，通过文档偏移跟踪图片引用。
+- 兼容旧的 `lineNumber` 写入方式，用于保留已有调用路径。
 - 同一 URL 允许出现在多个行号上。
-- 非图片引用会清除当前行已有映射，降低编辑后残留错误提示的概率。
+- 文档编辑导致偏移变化时，会优先在原范围内查找原始引用文本，找不到时再按最近位置恢复映射。
+- 非图片引用或失效范围会清除当前映射，降低编辑后残留错误提示的概率。
 - 外层使用 `WeakHashMap`，减少文件关闭后的长期持有风险。
 - store 由 project service 持有，每个项目独立。
 
@@ -260,6 +299,22 @@ SVG 处理策略：
 - 非图片 URL 会清除当前行映射。
 - 不同 `VirtualFile` 映射互相隔离。
 - `clear()` 能清空映射。
+
+`JsImageReferenceExtractorTest`
+
+- JS/TS 变量初始化值中的图片引用。
+- JS/TS 对象字段值中的图片引用。
+- JS/TS 数组字符串项中的图片引用。
+- JSON 对象字段值中的图片引用。
+- JSON 数组字符串项中的图片引用。
+- JSON property name 不会被误识别。
+- 非图片字符串和动态模板字符串不会被误识别。
+
+`PluginConfigurationTest`
+
+- 插件名称、设置页和应用服务注册。
+- JavaScript、TypeScript、JSON、CSS line marker 注册。
+- JavaScript、JSON、CSS 运行依赖声明。
 
 `ImageCacheTest`
 

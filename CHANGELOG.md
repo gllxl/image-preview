@@ -1,6 +1,26 @@
 <!-- Keep a Changelog guide -> https://keepachangelog.com -->
 
-# image-preview Changelog
+# Image Preview Changelog
+
+## [0.4.2] - 2026-06-16
+
+### Added
+- Recognize image references in JavaScript and TypeScript arrays.
+- Recognize image references in JavaScript, TypeScript, and JSON object field values.
+- Recognize image references in JSON arrays.
+- Add detailed JS, TS, JSON, CSS, remote URL, and local path examples.
+
+### Fixed
+- Ignore JSON property names and interpolated JavaScript/TypeScript template strings to avoid false image previews.
+
+## [0.4.1] - 2026-05-19
+
+### Changed
+- Rename the Marketplace display name to Image Preview.
+
+### Fixed
+- Fix SVG decoding on newer JetBrains runtimes when the default JAXP document builder provider is not accessible.
+- Fix stale inline image size annotations appearing on the wrong lines after inserting content before an image URL.
 
 ## [0.4.0] - 2026-05-15
 

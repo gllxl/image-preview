@@ -14,6 +14,7 @@ import java.io.ByteArrayInputStream
 import javax.imageio.ImageIO
 import javax.xml.XMLConstants
 import javax.xml.parsers.DocumentBuilderFactory
+import javax.xml.parsers.FactoryConfigurationError
 import kotlin.math.min
 import kotlin.math.roundToInt
 import org.w3c.dom.Document
@@ -78,7 +79,7 @@ class ImageDecoder(
   }
 
   private fun parseSvgDocument(bytes: ByteArray): Document {
-    val factory = DocumentBuilderFactory.newInstance()
+    val factory = createDocumentBuilderFactory()
     factory.isNamespaceAware = true
     factory.isXIncludeAware = false
     factory.setExpandEntityReferences(false)
@@ -92,6 +93,51 @@ class ImageDecoder(
     return ByteArrayInputStream(bytes).use {
       factory.newDocumentBuilder().parse(it)
     }
+  }
+
+  private fun createDocumentBuilderFactory(): DocumentBuilderFactory {
+    var firstFailure: Throwable? = null
+
+    fun attempt(create: () -> DocumentBuilderFactory): DocumentBuilderFactory? {
+      return try {
+        create()
+      } catch (e: FactoryConfigurationError) {
+        firstFailure = firstFailure ?: e
+        null
+      } catch (e: LinkageError) {
+        firstFailure = firstFailure ?: e
+        null
+      } catch (e: SecurityException) {
+        firstFailure = firstFailure ?: e
+        null
+      }
+    }
+
+    // IntelliJ may expose xml-apis.jar ahead of java.xml; its JAXP finder cannot
+    // instantiate the JDK-internal Xerces provider on recent modular JBRs.
+    documentBuilderFactoryClassLoaders().forEach { classLoader ->
+      attempt {
+        DocumentBuilderFactory.newInstance(XERCES_DOCUMENT_BUILDER_FACTORY, classLoader)
+      }?.let { return it }
+    }
+
+    return attempt {
+      DocumentBuilderFactory.newDefaultInstance()
+    } ?: attempt {
+      DocumentBuilderFactory.newInstance()
+    } ?: throw IllegalStateException(
+      "No XML DocumentBuilderFactory provider is available",
+      firstFailure,
+    )
+  }
+
+  private fun documentBuilderFactoryClassLoaders(): List<ClassLoader> {
+    return listOfNotNull(
+      ImageDecoder::class.java.classLoader,
+      Thread.currentThread().contextClassLoader,
+      DocumentBuilderFactory::class.java.classLoader,
+      ClassLoader.getSystemClassLoader(),
+    ).distinct()
   }
 
   private fun svgDocumentSize(document: Document): Rectangle2D.Float {
@@ -173,6 +219,8 @@ class ImageDecoder(
 
   companion object {
     const val MAX_SVG_PREVIEW_SIDE = 1024f
+    private const val XERCES_DOCUMENT_BUILDER_FACTORY =
+      "org.apache.xerces.jaxp.DocumentBuilderFactoryImpl"
     private const val ACCESS_EXTERNAL_DTD = "http://javax.xml.XMLConstants/property/accessExternalDTD"
     private const val ACCESS_EXTERNAL_SCHEMA = "http://javax.xml.XMLConstants/property/accessExternalSchema"
     private val SVG_LENGTH_REGEX = Regex("^([+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+))")

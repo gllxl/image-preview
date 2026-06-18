@@ -1,0 +1,21 @@
+{
+  "logo": "./assets/logo.svg",
+  "hero": "./assets/hero.svg",
+  "remoteIcon": "https://resources.jetbrains.com/storage/products/company/brand/logos/WebStorm_icon.png",
+  "gallery": [
+    "./assets/avatar.svg",
+    "./assets/card.svg",
+    "https://resources.jetbrains.com/storage/products/company/brand/logos/IntelliJ_IDEA_icon.svg"
+  ],
+  "nested": {
+    "emptyState": "./assets/nested/empty-state.svg",
+    "productIcon": "https://resources.jetbrains.com/storage/products/company/brand/logos/GoLand_icon.svg"
+  },
+  "./assets/logo.svg": "this key should not be previewed",
+  "negativeCases": {
+    "notImage": "./assets/not-image.txt",
+    "protocolRelative": "//cdn.example.com/logo.png",
+    "plainText": "hello"
+  }
+}
+

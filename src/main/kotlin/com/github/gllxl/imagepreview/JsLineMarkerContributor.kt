@@ -11,10 +11,15 @@ class JsLineMarkerContributor : LineMakerContributor() {
 
     val document = PsiDocumentManager.getInstance(element.project).getDocument(element.containingFile) ?: return null
     val virtualFile = element.containingFile.virtualFile ?: return null
-    val lineNumber = document.getLineNumber(element.textOffset)
     val imageService = imagePreviewService(element.project)
     val imageReference = imageService.resolveImageReference(rawImageReference, virtualFile) ?: return null
-    imageService.references.setLineMapping(virtualFile, lineNumber, imageReference)
+    imageService.references.setLineMapping(
+      virtualFile,
+      document,
+      element.textRange,
+      rawImageReference,
+      imageReference,
+    )
 
     return getLineMaker(imageReference, element.project)
   }

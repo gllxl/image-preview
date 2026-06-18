@@ -66,6 +66,32 @@ class ImageDecoderTest {
   }
 
   @Test
+  fun testSvgDecodeIgnoresBrokenJaxpFactorySystemProperty() {
+    val svg = """
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="12">
+        <rect width="18" height="12" fill="#4f8cff"/>
+      </svg>
+    """.trimIndent().toByteArray()
+    val propertyName = "javax.xml.parsers.DocumentBuilderFactory"
+    val previousValue = System.getProperty(propertyName)
+
+    System.setProperty(propertyName, "com.example.DoesNotExist")
+    try {
+      val image = decoder.decode(svg, "https://cdn.example.com/no-jaxp-provider.svg")
+
+      assertNotNull(image)
+      assertEquals(18, image.previewImage.width)
+      assertEquals(12, image.previewImage.height)
+    } finally {
+      if (previousValue == null) {
+        System.clearProperty(propertyName)
+      } else {
+        System.setProperty(propertyName, previousValue)
+      }
+    }
+  }
+
+  @Test
   fun testSvgContentTypeIsHonoredWhenUrlHasDifferentExtension() {
     val svg = """
       <svg xmlns="http://www.w3.org/2000/svg" width="40" height="30">
